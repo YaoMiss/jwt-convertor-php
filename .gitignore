@@ -1,0 +1,7 @@
+### Laravel template
+/vendor/
+.idea
+.phpunit.result.cache
+composer.lock
+/unit-test-report
+phpunit.dev.xml

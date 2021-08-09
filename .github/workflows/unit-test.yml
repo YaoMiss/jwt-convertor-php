@@ -1,0 +1,36 @@
+name: Unit Test
+on:
+    push:
+        branches:
+            - master
+    pull_request:
+
+jobs:
+    test:
+        runs-on: ubuntu-latest
+        strategy:
+            matrix:
+                php-versions: [ "7.0", "7.1", "7.2", "7.3", "7.4", "8.0" ]
+        name: PHP ${{ matrix.php-versions }} Unit Test
+        steps:
+            -   name: Checkout
+                uses: actions/checkout@v2
+
+            -   name: Setup PHP
+                uses: shivammathur/setup-php@v2
+                with:
+                    php-version: ${{ matrix.php-versions }}
+                    extensions: mbstring,openssl,sodium
+                    tools: php-cs-fixer, phpunit
+                    coverage: xdebug
+                    ini-values: post_max_size=256M, max_execution_time=180
+
+            -   name: Install Dependencies
+                uses: nick-invision/retry@v1
+                with:
+                    timeout_minutes: 10
+                    max_attempts: 3
+                    command: composer install
+
+            -   name: Run Unit Test Script
+                run: vendor/bin/phpunit

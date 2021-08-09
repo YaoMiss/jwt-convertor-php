@@ -1,0 +1,53 @@
+{
+    "name": "shota/jwt-covertor",
+    "description": "A simple jwt convertor",
+    "type": "library",
+    "homepage": "https://github.com/YaoMiss/jwt-convertor-php",
+    "keywords": [
+        "php",
+        "jwt"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Packie Pat",
+            "email": "biyongyao@gmail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0|^8.0",
+        "ext-sodium": "*",
+        "ext-openssl": "*",
+        "ext-json": "*"
+    },
+    "require-dev": {
+        "mockery/mockery": "^1.0",
+        "phpunit/phpunit": ">=8.0",
+        "squizlabs/php_codesniffer": "^3.0"
+    },
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Shota\\JWT\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Shota\\JWT\\Test\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "./vendor/bin/phpunit",
+        "check-style": "phpcs src tests",
+        "fix-style": "phpcbf src tests"
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.0-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
