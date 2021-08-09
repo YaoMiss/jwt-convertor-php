@@ -25,7 +25,6 @@ class ECSTest extends TestCase
 
     /**
      * @throws \SodiumException
-     * @throws \JsonException
      */
     public function testEncode(): array
     {

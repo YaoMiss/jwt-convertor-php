@@ -28,7 +28,7 @@ class ExceptionTest extends TestCase
     public function testErrorPayloadJson(): void
     {
         $mockJwtStr = sprintf('%s.%s.%s', 'dsaadsdsasd', 'sdsfsdfasf', 'asdasdadasd');
-        $this->expectException(InvalidException::class);
+        $this->expectException(UnsupportException::class);
 
         JWT::decode($mockJwtStr, '11111');
     }
@@ -52,7 +52,6 @@ class ExceptionTest extends TestCase
     }
 
     /**
-     * @throws \JsonException
      * @throws \SodiumException
      */
     public function testDecodeNotSupportAlgo(): void
@@ -72,14 +71,14 @@ class ExceptionTest extends TestCase
             "admin" => true,
         ];
 
-        $segments[] = JWT::urlSafeB64Encode(json_encode($header, JSON_THROW_ON_ERROR));
-        $segments[] = JWT::urlsafeB64Encode(json_encode($payload, JSON_THROW_ON_ERROR));
-        $segments[] = JWT::urlsafeB64Encode(JWT::sign(implode('.', $segments), '11111', 'HS256'));
+        $segments[] = JWT::urlSafeB64Encode(json_encode($header));
+        $segments[] = JWT::urlsafeB64Encode(json_encode($payload));
+        $segments[] = JWT::urlsafeB64Encode(JWT::sign(implode('.', $segments), '11111'));
 
         $jwtStr = implode('.', $segments);
 
         $this->expectException(UnsupportException::class);
 
-        JWT::decode($jwtStr,'11111');
+        JWT::decode($jwtStr, '11111');
     }
 }

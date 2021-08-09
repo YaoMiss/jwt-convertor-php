@@ -22,6 +22,7 @@ class JWT
         'HS384' => ['lib' => self::ENCRYPT_LIBRARY_PHP_HASH_HMAC, 'method' => 'SHA384'],
         'HS512' => ['lib' => self::ENCRYPT_LIBRARY_PHP_HASH_HMAC, 'method' => 'SHA512'],
 
+        // Edwards-curve DSA signature with SHA-2
         'EdDSA' => ['lib' => self::ENCRYPT_LIBRARY_PHP_SODIUM_CRYPTO, 'method' => 'EdDSA'],
 
         // EC DSA signature with SHA-2
@@ -43,14 +44,14 @@ class JWT
     ];
 
     /**
-     * @throws \JsonException|\SodiumException
+     * @throws \SodiumException
      */
     public static function encode(array $payload, string $key, string $algo = 'HS256'): string
     {
         $header = ['typ' => 'JWT', 'alg' => $algo];  // default header
 
-        $segments[] = self::urlSafeB64Encode(json_encode($header, JSON_THROW_ON_ERROR));
-        $segments[] = self::urlsafeB64Encode(json_encode($payload, JSON_THROW_ON_ERROR));
+        $segments[] = self::urlSafeB64Encode(json_encode($header));
+        $segments[] = self::urlsafeB64Encode(json_encode($payload));
         $segments[] = self::urlsafeB64Encode(self::sign(implode('.', $segments), $key, $algo));
 
         return implode('.', $segments);
@@ -65,13 +66,13 @@ class JWT
         }
         [$encodeHeader, $encodePayload, $encodeSignature] = $encryptSegments;
         try {
-            $header = json_decode(self::urlSafeB64Decode($encodeHeader), true, 512, JSON_THROW_ON_ERROR);
-            $payload = json_decode(self::urlSafeB64Decode($encodePayload), true, 512, JSON_THROW_ON_ERROR);
+            $header = json_decode(self::urlSafeB64Decode($encodeHeader), true);
+            $payload = json_decode(self::urlSafeB64Decode($encodePayload), true);
             $signature = self::urlSafeB64Decode($encodeSignature);
         } catch (\Throwable $exception) {
             throw new InvalidException(sprintf('Cannot decode the jwt ,maybe it is wrong ,msg : %s', $exception->getMessage()));
         }
-        if (!isset(self::$supportAlgorithm[$header['alg']])) {
+        if (!isset($header['alg']) || !isset(self::$supportAlgorithm[$header['alg']])) {
             throw new UnsupportException('Jwt encrypt algorithm not support');
         }
         try {
